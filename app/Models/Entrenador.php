@@ -5,21 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Cliente extends Model
+class Entrenador extends Model
 {
     use HasFactory;
 
-    protected $table = 'clientes';
+    protected $table = 'entrenadores';
 
     protected $fillable = [
         'nombre',
-        'apellido',
-        'email',
-        'membresia_id'
+        'especialidad',
+        'telefono'
     ];
 
-    public function membresia()
+    public function rutinas()
     {
-        return $this->belongsTo(Membresia::class);
+        return $this->hasMany(Rutina::class);
     }
 }

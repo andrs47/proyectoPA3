@@ -8,36 +8,75 @@ use App\Models\Cliente;
 
 class ClienteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
    public function index()
     {
     return Cliente::all();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $cliente = Cliente::create($request->all());
+    
+public function store(Request $request)
+{
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'apellido' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:clientes,email'
+    ]);
 
-        return response()->json($cliente, 201);
-    }
+    $cliente = Cliente::create($request->all());
+
+    return response()->json($cliente, 201);
+}
 
     public function show(string $id)
-    {
-        //
+{
+    $cliente = Cliente::find($id);
+
+    if (!$cliente) {
+        return response()->json([
+            'message' => 'Cliente no encontrado'
+        ], 404);
     }
+
+    return response()->json($cliente, 200);
+}
 
     public function update(Request $request, string $id)
-    {
-        //
+{
+    $cliente = Cliente::find($id);
+
+    if (!$cliente) {
+        return response()->json([
+            'message' => 'Cliente no encontrado'
+        ], 404);
     }
 
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'apellido' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'membresia_id' => 'required|exists:membresias,id'
+    ]);
+
+    $cliente->update($request->all());
+
+    return response()->json($cliente, 200);
+}
+
     public function destroy(string $id)
-    {
-        //
+{
+    $cliente = Cliente::find($id);
+
+    if (!$cliente) {
+        return response()->json([
+            'message' => 'Cliente no encontrado'
+        ], 404);
     }
+
+    $cliente->delete();
+
+    return response()->json([
+        'message' => 'Cliente eliminado correctamente'
+    ], 200);
+}
 }
